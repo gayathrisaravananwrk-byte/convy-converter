@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Convy | Free PDF Tools</title>
+  <meta name="description" content="Convy - Convert files in seconds. Free PDF tools for students." />
+  <meta name="google-site-verification" content="1-kURe1RShzK3ucK0jvuFIs-n8KqtltYZSv8t4-u2mY" />
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- CDN Libraries (loaded here so they are ready immediately) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mammoth@1.8.0/mammoth.browser.min.js"></script>
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ========== HEADER ========== -->
+  <header class="header">
+    <div class="header-inner">
+      <h1 class="logo">Convy</h1>
+      <p class="tagline">Convert files in seconds</p>
+    </div>
+  </header>
+
+  <!-- ========== MAIN ========== -->
+  <main class="main">
+
+    <!-- Tool Tabs -->
+    <div class="tabs-wrapper">
+      <div class="tabs" role="tablist">
+        <button class="tab active" data-tool="image-to-pdf" role="tab" aria-selected="true">
+          <span class="tab-icon">🖼️</span>
+          <span class="tab-label">Image to PDF</span>
+        </button>
+        <button class="tab" data-tool="merge-pdf" role="tab" aria-selected="false">
+          <span class="tab-icon">📎</span>
+          <span class="tab-label">Merge PDF</span>
+        </button>
+        <button class="tab" data-tool="pdf-to-word" role="tab" aria-selected="false">
+          <span class="tab-icon">📝</span>
+          <span class="tab-label">PDF to Word</span>
+        </button>
+        <button class="tab" data-tool="pdf-to-ppt" role="tab" aria-selected="false">
+          <span class="tab-icon">📊</span>
+          <span class="tab-label">PDF to PPT</span>
+        </button>
+        <button class="tab" data-tool="word-to-pdf" role="tab" aria-selected="false">
+          <span class="tab-icon">📄</span>
+          <span class="tab-label">Word to PDF</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ========== TOOL: Image to PDF ========== -->
+    <div id="tool-image-to-pdf" class="tool-panel active">
+      <div class="tool-card">
+        <div class="tool-header">
+          <h2 class="tool-title">Image to PDF</h2>
+          <p class="tool-desc">Select up to 20 images (JPG, PNG, GIF, WEBP). Each image becomes one page.</p>
+        </div>
+        <div class="drop-zone" id="img-drop-zone" tabindex="0" role="button" aria-label="Drop images here or click to browse">
+          <input type="file" id="img-input" accept="image/jpeg,image/jpg,image/png,image/gif,image/webp" multiple hidden />
+          <div class="drop-icon">🖼️</div>
+          <p class="drop-label">Drop images here or click to browse</p>
+          <p class="drop-hint">Supports JPG, PNG, GIF, WEBP &bull; Max 20 files</p>
+        </div>
+        <div class="preview-grid" id="img-previews"></div>
+        <ul class="file-list" id="img-file-list"></ul>
+        <div class="status-box" id="img-status" hidden></div>
+        <div class="actions">
+          <button class="btn-primary" id="img-convert-btn" disabled>Convert to PDF (0)</button>
+          <button class="btn-ghost" id="img-clear-btn" hidden>Clear all</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== TOOL: Merge PDF ========== -->
+    <div id="tool-merge-pdf" class="tool-panel">
+      <div class="tool-card">
+        <div class="tool-header">
+          <h2 class="tool-title">Merge PDF</h2>
+          <p class="tool-desc">Combine multiple PDF files into one. Add files in order and download the merged result.</p>
+        </div>
+        <div class="drop-zone" id="pdf-drop-zone" tabindex="0" role="button" aria-label="Drop PDF files here or click to browse">
+          <input type="file" id="pdf-input" accept="application/pdf,.pdf" multiple hidden />
+          <div class="drop-icon">📎</div>
+          <p class="drop-label">Drop PDF files here or click to browse</p>
+          <p class="drop-hint">Supports PDF &bull; Up to 30 files</p>
+        </div>
+        <ul class="file-list" id="pdf-file-list"></ul>
+        <div class="status-box" id="pdf-status" hidden></div>
+        <div class="actions">
+          <button class="btn-primary" id="pdf-merge-btn" disabled>Merge PDFs</button>
+          <button class="btn-ghost" id="pdf-clear-btn" hidden>Clear all</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== TOOL: PDF to Word ========== -->
+    <div id="tool-pdf-to-word" class="tool-panel">
+      <div class="tool-card">
+        <div class="tool-header">
+          <h2 class="tool-title">PDF to Word</h2>
+          <p class="tool-desc">Extract text from a PDF and download it as an editable .docx Word document.</p>
+        </div>
+        <div class="drop-zone" id="ptw-drop-zone" tabindex="0" role="button" aria-label="Drop a PDF here or click to browse">
+          <input type="file" id="ptw-input" accept="application/pdf,.pdf" hidden />
+          <div class="drop-icon">📝</div>
+          <p class="drop-label">Drop a PDF here or click to browse</p>
+          <p class="drop-hint">Supports PDF &bull; One file at a time</p>
+        </div>
+        <ul class="file-list" id="ptw-file-list"></ul>
+        <div class="status-box" id="ptw-status" hidden></div>
+        <div class="actions">
+          <button class="btn-primary" id="ptw-convert-btn" disabled>Convert to Word</button>
+          <button class="btn-ghost" id="ptw-clear-btn" hidden>Clear</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== TOOL: PDF to PPT ========== -->
+    <div id="tool-pdf-to-ppt" class="tool-panel">
+      <div class="tool-card">
+        <div class="tool-header">
+          <h2 class="tool-title">PDF to PowerPoint</h2>
+          <p class="tool-desc">Convert each PDF page into a PowerPoint slide. Text is extracted and laid out automatically.</p>
+        </div>
+        <div class="drop-zone" id="ptp-drop-zone" tabindex="0" role="button" aria-label="Drop a PDF here or click to browse">
+          <input type="file" id="ptp-input" accept="application/pdf,.pdf" hidden />
+          <div class="drop-icon">📊</div>
+          <p class="drop-label">Drop a PDF here or click to browse</p>
+          <p class="drop-hint">Supports PDF &bull; One file at a time</p>
+        </div>
+        <ul class="file-list" id="ptp-file-list"></ul>
+        <div class="status-box" id="ptp-status" hidden></div>
+        <div class="actions">
+          <button class="btn-primary" id="ptp-convert-btn" disabled>Convert to PowerPoint</button>
+          <button class="btn-ghost" id="ptp-clear-btn" hidden>Clear</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== TOOL: Word to PDF ========== -->
+    <div id="tool-word-to-pdf" class="tool-panel">
+      <div class="tool-card">
+        <div class="tool-header">
+          <h2 class="tool-title">Word to PDF</h2>
+          <p class="tool-desc">Convert a .docx Word document into a downloadable PDF. Supports text, headings, and lists.</p>
+        </div>
+        <div class="drop-zone" id="wtp-drop-zone" tabindex="0" role="button" aria-label="Drop a .docx file here or click to browse">
+          <input type="file" id="wtp-input" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" hidden />
+          <div class="drop-icon">📄</div>
+          <p class="drop-label">Drop a .docx file here or click to browse</p>
+          <p class="drop-hint">Supports .docx (Word 2007+) &bull; One file at a time</p>
+        </div>
+        <ul class="file-list" id="wtp-file-list"></ul>
+        <div class="status-box" id="wtp-status" hidden></div>
+        <div class="actions">
+          <button class="btn-primary" id="wtp-convert-btn" disabled>Convert to PDF</button>
+          <button class="btn-ghost" id="wtp-clear-btn" hidden>Clear</button>
+        </div>
+        <p class="tool-note">Note: Complex formatting (tables, images) may not transfer — text content is preserved.</p>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="footer">
+    <p>&copy; 2026 Convy | Free PDF Tools for Students</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
